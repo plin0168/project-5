@@ -2,6 +2,7 @@ var
   express = require('express'),
   app = express(),
   logger = require('morgan'),
+  bower = require('bower'),
   PORT = process.env.PORT || 3000
 
 app.use(logger('dev'))
