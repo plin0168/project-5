@@ -1,31 +1,37 @@
 var
   express = require('express'),
   app = express(),
-  logger = require('morgan'),
+  mongoose = require('mongoose'),
+  morgan = require('morgan'),
+  bodyParser = require('body-parser'),
+  methodOverride = require('method-override'),
   bower = require('bower'),
   PORT = process.env.PORT || 3000
 
+
+//EXPRESS CONFIGURATION
+// ----------------------
+//set the MongoDB connection
+
+mongoose.connect('mongodb:/localhost/MeanMapApp')
+
+//Logging and Parsing
+
 app.use(logger('dev'))
-app.use(express.static('public'))
+app.use(express.static( __dirname +'/public')) // sets the static files location to public
+app.use('/bower_components', express.static(__dirname + '/bower_components')) // Use BowerComponents
+app.use(morgan('dev')) // log with Morgan
+app.use(bodyParser.json()) // parse application/json
+app.use(bodyParser.urlencoded({extended:true})) // parse application/x-www-form-urlencoded
+app.use(bodyParser.text())  // allows bodyParser to look at raw text
+app.use(bodyParser.json({ type: 'application/vnd.api +json'}))  // parse application/vnd.api+json as json
+app.use(methodOverride())
 
-//INDEX OF ALL POKEMON
-// http://pokeapi.co/api/v2/pokemon/?limit=811
-app.get('/api/pokedex', function(req,res){
-  var apiUrl = 'http://pokeapi.co/api/v2/pokemon/?limit=811'
 
-  request.get(apiUrl, function(err,response,body){
-    res.json(JSON.parse(body))
-  })
-})
+//Routes
+//---------------
+// require('./app/routes.js')(app)
 
-//show all pokemon
-// http://pokeapi.co/api/v2/pokemon/1/
-app.get('/api/pokedex/:id', function(req,res){
-  var apiUrl = 'http://pokeapi.co/api/v2/pokemon/1/'
-  request.get(apiUrl, function(err,response,body){
-    res.json(JSON.parse(body))
-  })
-})
 
 
 app.listen(PORT, function(err){
